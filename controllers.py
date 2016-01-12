@@ -38,7 +38,8 @@ class Controller(object):
                 error = e
 
             if error:
-                print 'Error: ', e
+                import traceback
+                traceback.print_exc()
                 print
                 print 'Available commands: '
                 for key in input_dict:
@@ -144,7 +145,11 @@ class Controller(object):
             ==============================
             {card_type}
             ==============================
-
+            {{card_abilities}}
+            |                            |
+            |                            |
+            |                            |
+            {card_power}
             ==============================
         """
 
@@ -158,11 +163,30 @@ class Controller(object):
 
         args_dict['card_header'] += '|'
 
-
         args_dict['card_type'] = '|' + player.hand[int(card_num)].type_name
         args_dict['card_type'] += (' ' * (29 - len(args_dict['card_type']))) + '|'
 
-        Controller.print_message(card_template.format(**args_dict))
+        args_dict['card_power'] = '|'
+        power_toughness = '{}/{}'.format(curr_card.power, curr_card.toughness)
+        args_dict['card_power'] += ' ' * (28 - len(power_toughness))
+        args_dict['card_power'] += power_toughness
+        args_dict['card_power'] += '|'
+
+        card_abilities = ''
+        if curr_card.abilities:
+            card_abilities = '|'
+
+            abilities = []
+            for ability in curr_card.abilities:
+                abilities = ability.display_text
+            card_abilities += abilities
+            card_abilities += ' ' * (28 - len(abilities))
+            card_abilities += '|'
+
+        card_art = card_template.format(**args_dict)
+        card_art = card_art.format(card_abilities=card_abilities)
+
+        Controller.print_message(card_art)
 
 
 Controller.init()

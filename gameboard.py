@@ -13,7 +13,7 @@ class Deck(CardContainer):
 
     @staticmethod
     def generate_deck():
-        from cards import BasicMountain, BasicPlains, AngelicOverseer, GoblinCavaliers
+        from cards import BasicMountain, BasicPlains, AngelicOverseer, GoblinCavaliers, GoblinDeathraiders
         curr_deck = Deck()
 
         for i in range(10):
@@ -25,6 +25,9 @@ class Deck(CardContainer):
 
         for i in range(4):
             curr_deck.append(GoblinCavaliers())
+
+        for i in range(4):
+            curr_deck.append(GoblinDeathraiders())
 
         curr_deck.shuffle()
         return curr_deck
@@ -44,17 +47,24 @@ class Graveyard(CardContainer):
 
 class Player(object):
     def __init__(self, library):
-        self.library        = library
-        self.hand           = Hand()
-        self.battlefield    = Battlefield()
-        self.graveyard      = Graveyard()
-        self.mana           = {
-            ManaBlue        : 0,
-            ManaWhite       : 0,
-            ManaBlack       : 0,
-            ManaGreen       : 0,
-            ManaRed         : 0,
-            ManaColorless   : 0,
+        self.library = library
+        self.hand = Hand()
+
+        # TODO: For testing...
+        from cards import AngelicOverseer, GoblinDeathraiders, RagingGoblin
+        self.hand.append(AngelicOverseer())
+        self.hand.append(GoblinDeathraiders())
+        self.hand.append(RagingGoblin())
+
+        self.battlefield = Battlefield()
+        self.graveyard = Graveyard()
+        self.mana = {
+            ManaBlue: 0,
+            ManaWhite: 0,
+            ManaBlack: 0,
+            ManaGreen: 0,
+            ManaRed: 0,
+            ManaColorless: 0,
         }
 
     def draw_card(self):

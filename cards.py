@@ -1,10 +1,11 @@
 from manas import *
 from util import color_string
 from controllers import Controller
+from abilities import Trample, Haste
 
 
 class CardTypeMixin(object):
-    type_name   = ''
+    type_name = ''
 
     def card_type_init(self):
         self.events = {
@@ -26,8 +27,8 @@ class CardTypeMixin(object):
 
 
 class BasicLand(CardTypeMixin):
-    type_name   = 'Basic Land'
-    mana_type   = None
+    type_name = 'Basic Land'
+    mana_type = None
 
     def card_type_init(self):
         super(BasicLand, self).card_type_init()
@@ -50,32 +51,41 @@ class BasicLand(CardTypeMixin):
 
 
 class Creature(CardTypeMixin):
-    type_name   = 'Creature'
-    power       = 0
-    toughness   = 0
-    mana_cost   = None
+    type_name = 'Creature'
+    power = 0
+    toughness = 0
+    mana_cost = None
+    abilities = []
 
 
 class CreatureAngel(Creature):
-    type_name   = 'Creature - Angel'
+    type_name = 'Creature - Angel'
 
 
 class CreatureGoblin(Creature):
-    type_name   = 'Creature - Goblin'
+    type_name = 'Creature - Goblin'
+
+
+class CreatureGoblinWarrior(CreatureGoblin):
+    type_name = 'Creature - Goblin Warrior'
+
+
+class CreatureGoblinBerserker(CreatureGoblin):
+    type_name = 'Creature - Goblin Berserker'
 
 
 class Card(object):
     class Event:
-        TAP     = 'event_tap'
-        PLAY    = 'event_play'
+        TAP = 'event_tap'
+        PLAY = 'event_play'
 
-    name        = ''
-    abilities   = ()
-    counters    = ()
-    mana_cost   = None
-    color       = ''
-    tapped      = False
-    events      = None
+    name = ''
+    abilities = ()
+    counters = ()
+    mana_cost = None
+    color = ''
+    tapped = False
+    events = None
 
     def __init__(self):
         self.card_type_init()
@@ -105,40 +115,63 @@ class Card(object):
 
 
 class AngelicOverseer(Card, CreatureAngel):
-    name        = 'Angelic Overseer'
-    color       = 'white'
-    power       = 5
-    toughness   = 3
-    mana_cost   = {
-        ManaColorless:  3,
-        ManaWhite:      2,
+    name = 'Angelic Overseer'
+    color = 'white'
+    power = 5
+    toughness = 3
+    mana_cost = {
+        ManaColorless: 3,
+        ManaWhite: 2,
     }
 
 
 class GoblinCavaliers(Card, CreatureGoblin):
-    name        = 'Goblin Cavaliers'
-    color       = 'red'
-    power       = 3
-    toughness   = 2
-    mana_cost   = {
-        ManaColorless:  2,
-        ManaRed:        1,
+    name = 'Goblin Cavaliers'
+    color = 'red'
+    power = 3
+    toughness = 2
+    mana_cost = {
+        ManaColorless: 2,
+        ManaRed: 1,
     }
 
 
+class GoblinDeathraiders(Card, CreatureGoblinWarrior):
+    name = 'Goblin Deathraiders'
+    color = 'black & red'
+    power = 3
+    toughness = 1
+    mana_cost = {
+        ManaBlack: 1,
+        ManaRed: 1,
+    }
+    abilities = [Trample]
+
+
+class RagingGoblin(Card, CreatureGoblinBerserker):
+    name = 'Raging Goblin'
+    color = 'red'
+    power = 1
+    toughness = 1
+    mana_cost = {
+        ManaRed: 1,
+    }
+    abilities = [Haste]
+
+
 class BasicSwamp(Card, BasicLand):
-    name        = 'Swamp'
-    color       = 'black'
-    mana_type   = ManaBlack
+    name = 'Swamp'
+    color = 'black'
+    mana_type = ManaBlack
 
 
 class BasicMountain(Card, BasicLand):
-    name        = 'Mountain'
-    color       = 'red'
-    mana_type   = ManaRed
+    name = 'Mountain'
+    color = 'red'
+    mana_type = ManaRed
 
 
 class BasicPlains(Card, BasicLand):
-    name        = 'Plains'
-    color       = 'white'
-    mana_type   = ManaWhite
+    name = 'Plains'
+    color = 'white'
+    mana_type = ManaWhite
