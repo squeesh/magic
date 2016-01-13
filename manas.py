@@ -2,39 +2,41 @@
 
 class Mana(object):
     icon = ''
+    color = ''
+    short_name = ''
 
 
 class ManaBlue(Mana):
-    icon        = 'blue.png'
-    name        = 'blue'
-    short_name  = 'B'
+    icon = 'blue.png'
+    color = 'blue'
+    short_name = 'U'
 
 
 class ManaWhite(Mana):
-    icon        = 'white.png'
-    name        = 'white'
-    short_name  = 'W'
+    icon = 'white.png'
+    color = 'white'
+    short_name = 'W'
 
 
 class ManaBlack(Mana):
-    icon        = 'black.png'
-    name        = 'black'
-    short_name  = 'L'
+    icon = 'black.png'
+    color = 'black'
+    short_name = 'B'
 
 
 class ManaGreen(Mana):
-    icon        = 'green.png'
-    name        = 'green'
-    short_name  = 'G'
+    icon = 'green.png'
+    color = 'green'
+    short_name = 'G'
 
 
 class ManaRed(Mana):
-    icon        = 'red.png'
-    name        = 'red'
-    short_name  = 'R'
+    icon = 'red.png'
+    color = 'red'
+    short_name = 'R'
 
 
 class ManaColorless(Mana):
-    icon        = 'colorless.png'
-    name        = 'colorless'
-    short_name  = 'C'
+    icon = 'colorless.png'
+    color = 'colorless'
+    short_name = 'C'

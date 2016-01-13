@@ -1,7 +1,6 @@
-from manas import *
+from manas import ManaBlue, ManaWhite, ManaBlack, ManaGreen, ManaRed, ManaColorless
 from util import color_string
 from controllers import Controller
-from abilities import Trample, Haste
 
 
 class CardTypeMixin(object):
@@ -50,30 +49,6 @@ class BasicLand(CardTypeMixin):
             Controller.print_message("Error untapping card, not enough mana: %s\n" % self)
 
 
-class Creature(CardTypeMixin):
-    type_name = 'Creature'
-    power = 0
-    toughness = 0
-    mana_cost = None
-    abilities = []
-
-
-class CreatureAngel(Creature):
-    type_name = 'Creature - Angel'
-
-
-class CreatureGoblin(Creature):
-    type_name = 'Creature - Goblin'
-
-
-class CreatureGoblinWarrior(CreatureGoblin):
-    type_name = 'Creature - Goblin Warrior'
-
-
-class CreatureGoblinBerserker(CreatureGoblin):
-    type_name = 'Creature - Goblin Berserker'
-
-
 class Card(object):
     class Event:
         TAP = 'event_tap'
@@ -82,8 +57,8 @@ class Card(object):
     name = ''
     abilities = ()
     counters = ()
-    mana_cost = None
-    color = ''
+    mana_cost = ()
+    # color = ''
     tapped = False
     events = None
 
@@ -95,8 +70,8 @@ class Card(object):
         if self.tapped:
             tapped = ': TAPPED'
 
-        if self.color:
-            return color_string(self.type_name + ' - ' + self.name + tapped, self.color)
+        if self.get_color():
+            return color_string(self.type_name + ' - ' + self.name + tapped, self.get_color())
 
         return self.type_name + ' - ' + self.name + tapped
 
@@ -113,50 +88,17 @@ class Card(object):
         for event in self.events[event_code]:
             event(**kwargs)
 
+    def get_color(self):
+        colors = []
+        for mana in self.mana_cost:
+            if mana is not ManaColorless:
+                colors.append(mana.color)
 
-class AngelicOverseer(Card, CreatureAngel):
-    name = 'Angelic Overseer'
-    color = 'white'
-    power = 5
-    toughness = 3
-    mana_cost = {
-        ManaColorless: 3,
-        ManaWhite: 2,
-    }
-
-
-class GoblinCavaliers(Card, CreatureGoblin):
-    name = 'Goblin Cavaliers'
-    color = 'red'
-    power = 3
-    toughness = 2
-    mana_cost = {
-        ManaColorless: 2,
-        ManaRed: 1,
-    }
-
-
-class GoblinDeathraiders(Card, CreatureGoblinWarrior):
-    name = 'Goblin Deathraiders'
-    color = 'black & red'
-    power = 3
-    toughness = 1
-    mana_cost = {
-        ManaBlack: 1,
-        ManaRed: 1,
-    }
-    abilities = [Trample]
-
-
-class RagingGoblin(Card, CreatureGoblinBerserker):
-    name = 'Raging Goblin'
-    color = 'red'
-    power = 1
-    toughness = 1
-    mana_cost = {
-        ManaRed: 1,
-    }
-    abilities = [Haste]
+        if not colors:
+            return 'colorless'
+        elif len(colors) == 1:
+            return colors[0]
+        return 'gold'
 
 
 class BasicSwamp(Card, BasicLand):

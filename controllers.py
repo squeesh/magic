@@ -38,8 +38,9 @@ class Controller(object):
                 error = e
 
             if error:
-                import traceback
-                traceback.print_exc()
+                # import traceback
+                # traceback.print_exc()
+                print e
                 print
                 print 'Available commands: '
                 for key in input_dict:
@@ -68,15 +69,15 @@ class Controller(object):
 
     @staticmethod
     def show_hand(player, **kwargs):
-        Controller.print_message("player's hand: %s\n" % player.hand)
+        Controller.print_message(player.hand)
 
     @staticmethod
     def show_battlefield(player, **kwargs):
-        Controller.print_message("player's battlefield: %s\n" % player.battlefield)
+        Controller.print_message(player.battlefield)
 
     @staticmethod
     def show_graveyard(player, **kwargs):
-        Controller.print_message("player's graveyard: %s\n" % player.graveyard)
+        Controller.print_message(player.graveyard)
 
     @staticmethod
     def tap_card(player, tokens, **kwargs):
@@ -154,12 +155,13 @@ class Controller(object):
         """
 
         args_dict = {}
-        args_dict['card_header'] = '|' + curr_card.name
-        args_dict['card_header'] += (' ' * (29 - len(args_dict['card_header'])))
+        args_dict['card_header'] = '|' + color_string(curr_card.name, curr_card.get_color())
+        args_dict['card_header'] += (' ' * (28 - len(curr_card.name)))
 
         if curr_card.mana_cost:
-            mana_cost = ''.join([(item.short_name * curr_card.mana_cost[item]) for item in curr_card.mana_cost])
-            args_dict['card_header'] = args_dict['card_header'][:len(mana_cost) * -1] + mana_cost
+            mana_count = sum([curr_card.mana_cost[mana] for mana in curr_card.mana_cost])
+            mana_str = ''.join([color_string(mana.short_name * curr_card.mana_cost[mana], mana.color) for mana in curr_card.mana_cost])
+            args_dict['card_header'] = args_dict['card_header'][:mana_count * -1] + mana_str
 
         args_dict['card_header'] += '|'
 

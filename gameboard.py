@@ -4,6 +4,8 @@ from manas import *
 
 class CardContainer(list):
     def __repr__(self):
+        if not len(self):
+            return '[Empty]'
         return '[<%s>]' % '>, <'.join(['%s' % item for item in self])
 
 
@@ -13,7 +15,8 @@ class Deck(CardContainer):
 
     @staticmethod
     def generate_deck():
-        from cards import BasicMountain, BasicPlains, AngelicOverseer, GoblinCavaliers, GoblinDeathraiders
+        from cards import BasicMountain, BasicPlains
+        from creatures import AngelicOverseer, GoblinCavaliers, GoblinDeathraiders
         curr_deck = Deck()
 
         for i in range(10):
@@ -51,10 +54,11 @@ class Player(object):
         self.hand = Hand()
 
         # TODO: For testing...
-        from cards import AngelicOverseer, GoblinDeathraiders, RagingGoblin
+        from creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
         self.hand.append(AngelicOverseer())
         self.hand.append(GoblinDeathraiders())
         self.hand.append(RagingGoblin())
+        # End Testing
 
         self.battlefield = Battlefield()
         self.graveyard = Graveyard()
