@@ -52,14 +52,6 @@ class Player(object):
     def __init__(self, library):
         self.library = library
         self.hand = Hand()
-
-        # TODO: For testing...
-        from creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
-        self.hand.append(AngelicOverseer())
-        self.hand.append(GoblinDeathraiders())
-        self.hand.append(RagingGoblin())
-        # End Testing
-
         self.battlefield = Battlefield()
         self.graveyard = Graveyard()
         self.mana = {

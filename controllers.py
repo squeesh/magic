@@ -10,6 +10,14 @@ class Controller(object):
         Controller.players = []
         Controller.players.append(Player(Deck.generate_deck()))
 
+        # TODO: For testing...
+        player_one = Controller.players[0]
+        from creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
+        from cards import BasicPlains, BasicMountain
+        player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin()])
+        player_one.battlefield.extend([BasicPlains(), BasicPlains(), BasicPlains(), BasicMountain(), BasicMountain()])
+        # End Testing
+
     @staticmethod
     def main_loop():
         while(True):
@@ -26,6 +34,7 @@ class Controller(object):
                 'battlefield':  Controller.show_battlefield,
                 'graveyard':    Controller.show_graveyard,
                 'tap':          Controller.tap_card,
+                'mana':         Controller.show_mana,
             }
 
             error = None
@@ -80,6 +89,10 @@ class Controller(object):
         Controller.print_message(player.graveyard)
 
     @staticmethod
+    def show_mana(player, **kwargs):
+        Controller.get_mana_string(player)
+
+    @staticmethod
     def tap_card(player, tokens, **kwargs):
         card_num = int(tokens[1])
         player.tap_card(card_num)
@@ -119,13 +132,13 @@ class Controller(object):
             curr_string = ''
 
             if player.mana[color_type] > 0:
-                curr_string = color_string('O', color_type.name)
+                curr_string = color_string('O', color_type.color)
                 curr_string *= player.mana[color_type]
 
             if curr_string:
                 mana_list.append(curr_string)
 
-        return 'player mana updated:\n  %s' % ' '.join(mana_list)
+        return 'player mana:\n  %s' % ' '.join(mana_list)
 
 
     @staticmethod
