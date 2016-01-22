@@ -1,3 +1,3 @@
-from controllers import Controller
+from game_controller import GameController
 
-Controller.main_loop()
+GameController.main_loop()

@@ -54,7 +54,7 @@ class Player(object):
         self.hand = Hand()
         self.battlefield = Battlefield()
         self.graveyard = Graveyard()
-        self.mana = {
+        self.mana_pool = {
             ManaBlue: 0,
             ManaWhite: 0,
             ManaBlack: 0,
@@ -84,7 +84,7 @@ class Player(object):
     def can_spend_mana(self, mana_cost):
         from copy import copy
         can_spend = True
-        copied_mana = copy(self.mana)
+        copied_mana = copy(self.mana_pool)
 
         for mana_type in mana_cost:
             if mana_type != ManaColorless:
@@ -104,27 +104,28 @@ class Player(object):
 
     def spend_mana(self, mana_cost):
         if mana_cost:
-            for mana_type, count in mana_cost.iteritems():
+            for mana_type, count in mana_cost.items():
                 if mana_type != ManaColorless:
                     self.remove_mana(mana_type, count)
 
             mana_type = ManaColorless
-            count = mana_cost[ManaColorless]
-            assert sum(self.mana.values()) >= count
-            self.remove_mana(mana_type, count)
+            count = mana_cost.get(ManaColorless, 0)
+            if count:
+                assert sum(self.mana_pool.values()) >= count
+                self.remove_mana(mana_type, count)
 
     def add_mana(self, mana_type, count=1):
         assert mana_type and count > 0
-        self.mana[mana_type] += count
+        self.mana_pool[mana_type] += count
 
     def can_remove_mana(self, mana_type, count=1):
         can_remove = True
 
         if mana_type != ManaColorless:
-            if count > self.mana[mana_type]:
+            if count > self.mana_pool[mana_type]:
                 can_remove = False
 
-        elif count > sum(self.mana.values()):
+        elif count > sum(self.mana_pool.values()):
             can_remove = False
 
         return can_remove
@@ -132,20 +133,21 @@ class Player(object):
     def remove_mana(self, mana_type, count=1):
         assert mana_type and count > 0
         if mana_type != ManaColorless:
-            self.mana[mana_type] -= count
+            self.mana_pool[mana_type] -= count  # Assumption, we have already determined they have the available mana
         else:
-            count -= self.mana[ManaColorless]
+            # TODO: Comment this...
+            count -= self.mana_pool[ManaColorless]
             if count < 0:
-                self.mana[ManaColorless] = count * -1
+                self.mana_pool[ManaColorless] = count * -1
                 count = 0
             else:
-                self.mana[ManaColorless] = 0
+                self.mana_pool[ManaColorless] = 0
 
-            for curr_mana_type in self.mana:
-                count -= self.mana[curr_mana_type]
+            for curr_mana_type in self.mana_pool:
+                count -= self.mana_pool[curr_mana_type]
                 if count < 0:
-                    self.mana[curr_mana_type] = count * -1
+                    self.mana_pool[curr_mana_type] = count * -1
                     count = 0
                 else:
-                    self.mana[curr_mana_type] = 0
-        assert self.mana[mana_type] >= 0
+                    self.mana_pool[curr_mana_type] = 0
+        assert self.mana_pool[mana_type] >= 0

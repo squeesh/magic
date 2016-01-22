@@ -1,59 +1,61 @@
 from util import color_string
 
 
-class Controller(object):
+class GameController(object):
     players = ()
 
     @staticmethod
     def init():
         from gameboard import Player, Deck
-        Controller.players = []
-        Controller.players.append(Player(Deck.generate_deck()))
+        GameController.players = []
+        GameController.players.append(Player(Deck.generate_deck()))
 
         # TODO: For testing...
-        player_one = Controller.players[0]
+        player_one = GameController.players[0]
         from creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
-        from cards import BasicPlains, BasicMountain
+        from cards import BasicPlains, BasicMountain, BasicSwamp
         player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin()])
-        player_one.battlefield.extend([BasicPlains(), BasicPlains(), BasicPlains(), BasicMountain(), BasicMountain()])
+        player_one.battlefield.extend([
+            BasicPlains(), BasicPlains(), BasicPlains(), BasicPlains(),
+            BasicMountain(), BasicMountain(), BasicMountain(), BasicMountain(),
+            BasicSwamp(), BasicSwamp(), BasicSwamp(), BasicSwamp(),
+        ])
         # End Testing
 
     @staticmethod
     def main_loop():
         while(True):
-            input = raw_input()
-
-            tokens = input.split(' ')
+            tokens = input().split(' ')
 
             input_dict = {
-                'draw':         Controller.draw_card,
-                'hand':         Controller.show_hand,
-                'detail':       Controller.detail_card,
-                'discard':      Controller.discard,
-                'play':         Controller.play_card,
-                'battlefield':  Controller.show_battlefield,
-                'graveyard':    Controller.show_graveyard,
-                'tap':          Controller.tap_card,
-                'mana':         Controller.show_mana,
+                'draw':         GameController.draw_card,
+                'hand':         GameController.show_hand,
+                'detail':       GameController.detail_card,
+                'discard':      GameController.discard,
+                'play':         GameController.play_card,
+                'battlefield':  GameController.show_battlefield,
+                'graveyard':    GameController.show_graveyard,
+                'tap':          GameController.tap_card,
+                'mana':         GameController.show_mana,
             }
 
             error = None
 
             try:
-                input_dict[tokens[0]](player=Controller.players[0], tokens=tokens)
-            except KeyError, e:
+                input_dict[tokens[0]](player=GameController.players[0], tokens=tokens)
+            except KeyError as e:
                 error = e
-            except IndexError, e:
+            except IndexError as e:
                 error = e
 
             if error:
                 # import traceback
                 # traceback.print_exc()
-                print e
-                print
-                print 'Available commands: '
+                print(error)
+                print()
+                print('Available commands: ')
                 for key in input_dict:
-                    print '    ' + key
+                    print('    ' + key)
 
     @staticmethod
     def draw_card(player, tokens, **kwargs):
@@ -62,14 +64,14 @@ class Controller(object):
             card_num = int(tokens[1])
 
         for i in range(card_num):
-            Controller.print_message('player drew a card: %s' % player.draw_card())
+            GameController.print_message('player drew a card: %s' % player.draw_card())
 
-        Controller.print_message()
+        GameController.print_message()
 
     @staticmethod
     def discard(player, tokens, **kwargs):
         card_num = int(tokens[1])
-        Controller.print_message('player discarded a card: %s\n' % player.discard(card_num))
+        GameController.print_message('player discarded a card: %s\n' % player.discard(card_num))
 
     @staticmethod
     def play_card(player, tokens, **kwargs):
@@ -78,19 +80,19 @@ class Controller(object):
 
     @staticmethod
     def show_hand(player, **kwargs):
-        Controller.print_message(player.hand)
+        GameController.print_message(player.hand)
 
     @staticmethod
     def show_battlefield(player, **kwargs):
-        Controller.print_message(player.battlefield)
+        GameController.print_message(player.battlefield)
 
     @staticmethod
     def show_graveyard(player, **kwargs):
-        Controller.print_message(player.graveyard)
+        GameController.print_message(player.graveyard)
 
     @staticmethod
     def show_mana(player, **kwargs):
-        Controller.get_mana_string(player)
+         GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
     def tap_card(player, tokens, **kwargs):
@@ -104,12 +106,12 @@ class Controller(object):
     @staticmethod
     def spend_mana(player, mana_type, count=1):
         player.spend_mana(mana_type, count=count)
-        Controller.print_message(Controller.get_mana_string(player))
+        GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
     def add_mana(player, mana_type, count=1):
         player.add_mana(mana_type, count=count)
-        Controller.print_message(Controller.get_mana_string(player))
+        GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
     def can_remove_mana(player, mana_type, count=1):
@@ -118,22 +120,22 @@ class Controller(object):
     @staticmethod
     def remove_mana(player, mana_type, count=1):
         player.remove_mana(mana_type, count=count)
-        Controller.print_message(Controller.get_mana_string(player))
+        GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
     def print_message(string=''):
-        print string
+        print(string)
 
     @staticmethod
     def get_mana_string(player):
         mana_list = []
 
-        for color_type in player.mana:
+        for color_type in player.mana_pool:
             curr_string = ''
 
-            if player.mana[color_type] > 0:
+            if player.mana_pool[color_type] > 0:
                 curr_string = color_string('O', color_type.color)
-                curr_string *= player.mana[color_type]
+                curr_string *= player.mana_pool[color_type]
 
             if curr_string:
                 mana_list.append(curr_string)
@@ -201,7 +203,7 @@ class Controller(object):
         card_art = card_template.format(**args_dict)
         card_art = card_art.format(card_abilities=card_abilities)
 
-        Controller.print_message(card_art)
+        GameController.print_message(card_art)
 
 
-Controller.init()
+GameController.init()
