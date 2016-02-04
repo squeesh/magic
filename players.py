@@ -1,5 +1,7 @@
+from copy import copy
 from gameboard import Hand, Battlefield, Graveyard
 from manas import ManaBlack, ManaBlue, ManaWhite, ManaGreen, ManaRed, ManaColorless
+from cards.creatures import CreatureType
 
 
 class Player(object):
@@ -16,6 +18,7 @@ class Player(object):
             ManaRed: 0,
             ManaColorless: 0,
         }
+        self.health = 20
 
     def draw_card(self):
         drawn_card = self.library.pop(0)
@@ -36,7 +39,6 @@ class Player(object):
         self.battlefield[card_num].tap_card(player=self)
 
     def can_spend_mana(self, mana_cost):
-        from copy import copy
         can_spend = True
         copied_mana = copy(self.mana_pool)
 
@@ -105,3 +107,20 @@ class Player(object):
                 else:
                     self.mana_pool[curr_mana_type] = 0
         assert self.mana_pool[mana_type] >= 0
+
+    def add_health(self, count):
+        self.health += count
+
+    def remove_health(self, count):
+        self.health -= count
+
+    def get_controlled_creature_count(self):
+        count = 0
+        for card in self.battlefield:
+            if isinstance(card, CreatureType):
+                count += 1
+        return count
+
+    def get_controlled_artifact_count(self):
+        # TODO: implement
+        return 0

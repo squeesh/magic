@@ -14,8 +14,9 @@ class GameController(object):
         # TODO: For testing...
         player_one = GameController.players[0]
         from cards.creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
+        from cards.instants import WarReport
         from cards.lands.basic_lands import BasicPlains, BasicMountain, BasicSwamp
-        player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin()])
+        player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin(), WarReport()])
         player_one.battlefield.extend([
             BasicPlains(), BasicPlains(), BasicPlains(), BasicPlains(),
             BasicMountain(), BasicMountain(), BasicMountain(), BasicMountain(),
@@ -38,6 +39,7 @@ class GameController(object):
                 'graveyard':    GameController.show_graveyard,
                 'tap':          GameController.tap_card,
                 'mana':         GameController.show_mana,
+                'health':       GameController.show_health,
             }
 
             error = None
@@ -96,6 +98,10 @@ class GameController(object):
          GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
+    def show_health(player, **kwargs):
+         GameController.print_message(GameController.get_health_string(player))
+
+    @staticmethod
     def tap_card(player, tokens, **kwargs):
         card_num = int(tokens[1])
         player.tap_card(card_num)
@@ -124,6 +130,20 @@ class GameController(object):
         GameController.print_message(GameController.get_mana_string(player))
 
     @staticmethod
+    def get_battlefield_creature_count():
+        count = 0
+        for player in GameController.players:
+            count += player.get_controlled_creature_count()
+        return count
+
+    @staticmethod
+    def get_battlefield_artifact_count():
+        count = 0
+        for player in GameController.players:
+            count += player.get_controlled_artifact_count()
+        return count
+
+    @staticmethod
     def print_message(string=''):
         print(string)
 
@@ -141,8 +161,11 @@ class GameController(object):
             if curr_string:
                 mana_list.append(curr_string)
 
-        return 'player mana:\n  %s' % ' '.join(mana_list)
+        return 'player mana:\n{}'.format(' '.join(mana_list))
 
+    @staticmethod
+    def get_health_string(player):
+        return 'player health:\n{}'.format(player.health)
 
     @staticmethod
     def detail_card(player, tokens, **kwargs):
