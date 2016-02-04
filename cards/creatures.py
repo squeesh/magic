@@ -8,7 +8,7 @@ class Creature(CardTypeMixin):
     power = 0
     toughness = 0
     mana_cost = None
-    abilities = []
+    abilities = ()
 
 
 class CreatureAngel(Creature):
@@ -58,7 +58,7 @@ class GoblinDeathraiders(Card, CreatureGoblinWarrior):
         ManaBlack: 1,
         ManaRed: 1,
     }
-    abilities = [Trample]
+    abilities = (Trample,)
 
 
 class RagingGoblin(Card, CreatureGoblinBerserker):
@@ -69,5 +69,5 @@ class RagingGoblin(Card, CreatureGoblinBerserker):
     mana_cost = {
         ManaRed: 1,
     }
-    abilities = [Haste]
+    abilities = (Haste,)
 

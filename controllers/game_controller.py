@@ -12,7 +12,7 @@ class GameController(object):
 
         # TODO: For testing...
         player_one = GameController.players[0]
-        from creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
+        from cards.creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
         from cards import BasicPlains, BasicMountain, BasicSwamp
         player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin()])
         player_one.battlefield.extend([
@@ -165,6 +165,7 @@ class GameController(object):
             |                            |
             |                            |
             |                            |
+            |                            |
             {card_power}
             ==============================
         """
@@ -180,25 +181,15 @@ class GameController(object):
 
         args_dict['card_header'] += '|'
 
-        args_dict['card_type'] = '|' + player.hand[int(card_num)].type_name
-        args_dict['card_type'] += (' ' * (29 - len(args_dict['card_type']))) + '|'
+        args_dict['card_type'] = '|' + player.hand[int(card_num)].type_name.ljust(28) + '|'
 
-        args_dict['card_power'] = '|'
         power_toughness = '{}/{}'.format(curr_card.power, curr_card.toughness)
-        args_dict['card_power'] += ' ' * (28 - len(power_toughness))
-        args_dict['card_power'] += power_toughness
-        args_dict['card_power'] += '|'
+        args_dict['card_power'] = '|' + power_toughness.rjust(28) + '|'
 
-        card_abilities = ''
+        ability_text = ''
         if curr_card.abilities:
-            card_abilities = '|'
-
-            abilities = []
-            for ability in curr_card.abilities:
-                abilities = ability.display_text
-            card_abilities += abilities
-            card_abilities += ' ' * (28 - len(abilities))
-            card_abilities += '|'
+            ability_text = ', '.join([ability.display_text for ability in curr_card.abilities])
+        card_abilities = '|' + ability_text.ljust(28) + '|'
 
         card_art = card_template.format(**args_dict)
         card_art = card_art.format(card_abilities=card_abilities)

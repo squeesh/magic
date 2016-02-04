@@ -1,8 +1,8 @@
-from manas import ManaBlue, ManaWhite, ManaBlack, ManaGreen, ManaRed, ManaColorless
-from util import color_string
+from controllers.event_controller import EventController
+from controllers.game_controller import GameController
 from events import Event
-from game_controller import GameController
-from event_controller import EventController
+from manas import ManaWhite, ManaBlack, ManaRed, ManaColorless
+from util import color_string
 
 
 class CardTypeMixin(object):

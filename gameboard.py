@@ -1,4 +1,5 @@
 import random
+
 from manas import *
 
 
@@ -16,7 +17,7 @@ class Deck(CardContainer):
     @staticmethod
     def generate_deck():
         from cards import BasicMountain, BasicPlains
-        from creatures import AngelicOverseer, GoblinCavaliers, GoblinDeathraiders
+        from cards.creatures import AngelicOverseer, GoblinCavaliers, GoblinDeathraiders
         curr_deck = Deck()
 
         for i in range(10):
