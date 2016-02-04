@@ -6,14 +6,15 @@ class GameController(object):
 
     @staticmethod
     def init():
-        from gameboard import Player, Deck
+        from gameboard import Deck
+        from players import Player
         GameController.players = []
         GameController.players.append(Player(Deck.generate_deck()))
 
         # TODO: For testing...
         player_one = GameController.players[0]
         from cards.creatures import AngelicOverseer, GoblinDeathraiders, RagingGoblin
-        from cards import BasicPlains, BasicMountain, BasicSwamp
+        from cards.lands.basic_lands import BasicPlains, BasicMountain, BasicSwamp
         player_one.hand.extend([AngelicOverseer(), GoblinDeathraiders(), RagingGoblin()])
         player_one.battlefield.extend([
             BasicPlains(), BasicPlains(), BasicPlains(), BasicPlains(),
@@ -145,6 +146,8 @@ class GameController(object):
 
     @staticmethod
     def detail_card(player, tokens, **kwargs):
+        from cards.creatures import CreatureType
+
         card_num = int(tokens[1])
         curr_card = player.hand[card_num]
 
@@ -161,7 +164,7 @@ class GameController(object):
             ==============================
             {card_type}
             ==============================
-            {{card_abilities}}
+            {card_abilities}
             |                            |
             |                            |
             |                            |
@@ -183,16 +186,19 @@ class GameController(object):
 
         args_dict['card_type'] = '|' + player.hand[int(card_num)].type_name.ljust(28) + '|'
 
-        power_toughness = '{}/{}'.format(curr_card.power, curr_card.toughness)
-        args_dict['card_power'] = '|' + power_toughness.rjust(28) + '|'
+        if isinstance(curr_card, CreatureType):
+            power_toughness = '{}/{}'.format(curr_card.power, curr_card.toughness)
+            args_dict['card_power'] = '|' + power_toughness.rjust(28) + '|'
 
-        ability_text = ''
-        if curr_card.abilities:
-            ability_text = ', '.join([ability.display_text for ability in curr_card.abilities])
-        card_abilities = '|' + ability_text.ljust(28) + '|'
+            ability_text = ''
+            if curr_card.abilities:
+                ability_text = ', '.join([ability.display_text for ability in curr_card.abilities])
+            args_dict['card_abilities'] = '|' + ability_text.ljust(28) + '|'
+        else:
+            args_dict['card_power'] = '|' + (' ' * 28) + '|'
+            args_dict['card_abilities'] = '|' + (' ' * 28) + '|'
 
         card_art = card_template.format(**args_dict)
-        card_art = card_art.format(card_abilities=card_abilities)
 
         GameController.print_message(card_art)
 

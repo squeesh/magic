@@ -1,9 +1,10 @@
 from abilities import Trample, Haste
-from cards import Card, CardTypeMixin
+from cards import Card
+from cards.mixins import CardTypeMixin
 from manas import ManaBlue, ManaWhite, ManaBlack, ManaGreen, ManaRed, ManaColorless
 
 
-class Creature(CardTypeMixin):
+class CreatureType(CardTypeMixin):
     type_name = 'Creature'
     power = 0
     toughness = 0
@@ -11,11 +12,11 @@ class Creature(CardTypeMixin):
     abilities = ()
 
 
-class CreatureAngel(Creature):
+class CreatureAngel(CreatureType):
     type_name = 'Creature - Angel'
 
 
-class CreatureGoblin(Creature):
+class CreatureGoblin(CreatureType):
     type_name = 'Creature - Goblin'
 
 
